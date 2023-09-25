@@ -17,8 +17,8 @@
   },
   "dependencies": {
     "swagger-ui-4": "npm:swagger-ui@^4.19.1",
-    "swagger-ui-5": "npm:swagger-ui@5.4.2",
+    "swagger-ui-5": "npm:swagger-ui@5.7.2",
     "swagger-ui-react-4": "npm:swagger-ui-react@^4.19.1",
-    "swagger-ui-react-5": "npm:swagger-ui-react@5.4.2"
+    "swagger-ui-react-5": "npm:swagger-ui-react@5.7.2"
   }
 }
