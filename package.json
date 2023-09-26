@@ -6,7 +6,7 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
-    "test": "craco test --verbose --coverage"
+    "test": "craco test"
   },
   "author": "",
   "license": "ISC",
