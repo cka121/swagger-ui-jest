@@ -1,0 +1,1243 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "title" : "OAuth2 Authentication and Authorization API",
+    "description" : "This API provides endpoints for OAuth2 authentication and authorization, enabling secure access to resources by issuing access tokens.  It includes operations for obtaining metadata, authorizing clients, issuing tokens, and managing user information.  The API supports various OAuth2 flows and ensures secure and efficient access control.\n",
+    "termsOfService" : "https://cyberark.com/terms/",
+    "contact" : {
+      "name" : "CyberArk",
+      "url" : "http://cyberark.com/contact",
+      "email" : "contact@cyberark.com"
+    },
+    "license" : {
+      "name" : "Apache 2.0",
+      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version" : "cc-189609"
+  },
+  "servers" : [ {
+    "url" : "https://virtserver.swaggerhub.com/CyberArk/oauth2-api/cc-189609",
+    "description" : "SwaggerHub API Auto Mocking Test",
+    "x-internal" : false
+  }, {
+    "url" : "https://{tenant}/api",
+    "x-internal" : false
+  } ],
+  "security" : [ {
+    "bearerAuth" : [ ]
+  } ],
+  "tags" : [ {
+    "name" : "OAuth & OpenID Connect",
+    "description" : "OAuth and OpenID Connect related operations"
+  } ],
+  "paths" : {
+    "/OAuth2/Keys/{app_id}" : {
+      "post" : {
+        "tags" : [ "OAuth & OpenID Connect" ],
+        "summary" : "Get JWT keys",
+        "description" : "This API returns the public keys used to verify the signatures of access or ID tokens received by the authorization server.\nFor more information, refer to: - [Access token validation](https://identity-developer.cyberark.com/docs/access-tokens#access-token-validation) - [ID token validation](https://identity-developer.cyberark.com/docs/access-tokens#access-token-validation)\n",
+        "parameters" : [ {
+          "name" : "app_id",
+          "in" : "path",
+          "description" : "The application ID of the OpenID Connect custom web app",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "JWT keys returned successfully",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JwtKeysResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JwtKeysErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-idap-anon" : true,
+        "x-codegen-request-body-name" : "payload"
+      }
+    },
+    "/OAuth2/Metadata" : {
+      "post" : {
+        "tags" : [ "OAuth & OpenID Connect" ],
+        "summary" : "Get metadata",
+        "description" : "<li>The API returns the metadata of the OpenID provider.</li> <li>Please refer to <a href=\"https://identity-developer.cyberark.com/docs/about-openid-connect#openid-connect-metadata\">OpenID Connect provider metadata</a> for more details.</li>\n",
+        "parameters" : [ {
+          "name" : "serviceName",
+          "in" : "query",
+          "description" : "Application ID of the OpenID Connect custom app.",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Metadata retrieved successfully",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OAuth2GetMeta"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OAuth2GetMeta_400_errors"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ ],
+        "x-idap-anon" : true,
+        "x-codegen-request-body-name" : "payload"
+      }
+    },
+    "/OAuth2/Authorize/{app_id}" : {
+      "post" : {
+        "tags" : [ "OAuth & OpenID Connect" ],
+        "summary" : "Authorize",
+        "description" : "<li>The authorize API is used to send an authorization and authentication request to CyberArk Identity.</li>             <li>CyberArk Identity authenticates the user and returns authorization code/tokens based on the grant type to the client application as a part of the callback response.</li>                       <li>Refer to the guides<a href=\"https://identity-developer.cyberark.com/docs/oidc-authentication\">OpenID Connect</a> and \n <a href=\"https://identity-developer.cyberark.com/docs/oauth\">OAuth 2.0</a> for more information</li>  ",
+        "parameters" : [ {
+          "name" : "app_id",
+          "in" : "path",
+          "description" : "The application ID of the Open ID connect custom web app",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "scope",
+          "in" : "query",
+          "description" : "The scopes for which the authorization is requested. The scopes can be space separated. The scopes can be used to define the  <a href=\"https://identity-developer.cyberark.com/docs/api-scopes\"> APIs </a> and the <a href=\"https://identity-developer.cyberark.com/docs/claims\"> claims </a>  information that the client application can access. <b>Note:</b> 'OpenID' scope is required to get ID token.",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "redirect_uri",
+          "in" : "query",
+          "description" : "The callback URI to which the user gets redirected along with the authorization code or tokens. The redirect URI must be in the list of authorized redirect URIs.",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "prompt",
+          "in" : "query",
+          "description" : "Space delimited, case-sensitive list of ASCII string values that specifies whether the authorization server prompts the End-User for reauthentication and consent. \nCyberArk Identity supports the following values:\n  1. <b>none</b>: An error is returned if an End-User is not already authenticated.\n  2. <b>login</b>: CyberArk Identity prompts the End-User for reauthentication. If the user cannot be reauthenticated, an error is returned.\n",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "code_challenge_method",
+          "in" : "query",
+          "description" : "The method used to derive the ‘code challenge’ using the ‘code verifier.’ This param is only applicable for PKCE flow.",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "SHA256"
+        }, {
+          "name" : "code_challenge",
+          "in" : "query",
+          "description" : "It is derived from the <a href=\"https://identity-developer.cyberark.com/docs/authorization-code-flow-with-pkce#code-verifier-and-code-challenge\">code verifier</a>.  This param is only applicable for PKCE flow.",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "client_id",
+          "in" : "query",
+          "description" : "The client ID is the unique ID that CyberArk Identity issues to the client application.",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "90ab28fc-f890-4b3d-9c44-722c9b6ecf2"
+        }, {
+          "name" : "client_secret",
+          "in" : "query",
+          "description" : "A unique code that an authorization service issues when the service registers the application.  You can think of it as the password for the client application.",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "response_type",
+          "in" : "query",
+          "description" : "The response type determines the grant type of OAuth / OpenID Connect. CyberArk Identity supports the following grant types: \n  <b>1. Authorization code flow (with/without PKCE):</b> code  \n  <b>2. Implicit flow:</b> id_token; token id_token  \n  <b>3. Hybrid flow:</b> code token id_token; code token; code id_token\n",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "state",
+          "in" : "query",
+          "description" : "The Client should use the content of this parameter to make sure the Code it received matches the authorization request it sent.",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "302" : {
+            "description" : "Successful redirect with authorization code or tokens",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_302"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OAuth2Authorize_400_errors"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OAuth2Authorize_500_errors"
+                }
+              }
+            }
+          }
+        },
+        "x-idap-anon" : true,
+        "x-codegen-request-body-name" : "payload"
+      }
+    },
+    "/OAuth2/Confirm/{app_id}" : {
+      "post" : {
+        "tags" : [ "OAuth & OpenID Connect" ],
+        "summary" : "Confirm user consent",
+        "description" : "<li>This API would be called to approve/deny the user consent prompted by the authorization server.</li> <li>The user has to authenticate to CyberArk Identity to approve/deny the request. </li> <li> Refer to the guide <a href=\"https://identity-developer.cyberark.com/docs/oidc-consent\">OpenID Connect consent</a> for more information.</li>",
+        "parameters" : [ {
+          "name" : "app_id",
+          "in" : "path",
+          "description" : "The application ID of the Open ID connect custom web app",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "bounce",
+          "in" : "query",
+          "description" : "This value determines if the user has been authenticated or not. The value can be found in the  <a href=\"https://identity-developer.cyberark.com/reference/post_oauth2-authorize-app-id-\">login redirect URI</a> sent as a response to the authorization request. ",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "result",
+          "in" : "query",
+          "description" : "Approve / deny the request. This parameter takes two values: 0, 1 (1 - approve, 0 - deny). The default value is 0.",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer"
+          },
+          "example" : 0
+        }, {
+          "name" : "scopes",
+          "in" : "query",
+          "description" : "Comma delimited list of approved scopes prompted for consent. ",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "deniedScopes",
+          "in" : "query",
+          "description" : "Comma delimited list of denied scopes prompted for consent.",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "302" : {
+            "description" : "Successful API result",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OAuth2Confirm"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized access",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UnauthorizedUserError"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OAuth2Confirm500Errors"
+                }
+              }
+            }
+          }
+        },
+        "x-idap-anon" : false
+      }
+    },
+    "/OAuth2/Token/{app_id}" : {
+      "post" : {
+        "tags" : [ "OAuth & OpenID Connect" ],
+        "summary" : "Token request",
+        "description" : "<li>The token endpoint is used by the client application to request the tokens from the authorization server.</li>             <li>The authorization server validates the client before returning the tokens to the client application.</li>   <li>Please refer to <a href=\"https://identity-developer.cyberark.com/docs/oidc-authentication\"> OpenID Connect </a> for more details.</li></ul>   ",
+        "parameters" : [ {
+          "name" : "app_id",
+          "in" : "path",
+          "description" : "The application ID of the Open ID connect custom web app",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/x-www-form-urlencoded" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Token_app_id_body"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "API-Result",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OAuth2Token"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OAuth2Token_400_errors"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ ],
+        "x-idap-anon" : true,
+        "x-codegen-request-body-name" : "payload"
+      }
+    },
+    "/OAuth2/UserInfo/{app_id}" : {
+      "post" : {
+        "tags" : [ "OAuth & OpenID Connect" ],
+        "summary" : "UserInfo",
+        "description" : "<li> The <a href=\"https://identity-developer.cyberark.com/docs/userinfo-endpoint\"> UserInfo</a> endpoint returns authorized information (claims) about the end-user  represented by the corresponding authorization grant.</li> <li>To obtain the requested claims about the End-User, the client requests to the UserInfo Endpoint  using an Access Token obtained through OpenID Connect Authentication. </li> <li> The claims are represented as JSON objects containing a collection of key-value pairs.</li> <li>Standard or additional claims can be added to the userinfo response. Please refer <a href=\"https://identity-developer.cyberark.com/docs/claims\"> claims </a> for more information</li>",
+        "parameters" : [ {
+          "name" : "app_id",
+          "in" : "path",
+          "description" : "The application ID of the Open ID connect custom web app",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "API-Result",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OAuth2UserInfo"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OAuth2UserInfo_400_errors"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "The error is displayed when the access token used is expired.",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UnauthorizedUserError"
+                }
+              }
+            }
+          }
+        },
+        "x-idap-anon" : false
+      }
+    },
+    "/OAuth2/Introspect/{app_id}" : {
+      "post" : {
+        "tags" : [ "OAuth & OpenID Connect" ],
+        "summary" : "Introspect tokens",
+        "description" : "<li>Access, refresh or ID tokens can be validated using this endpoint. If the token is valid the API returns a boolean that indicates whether it is active.</li><li> If the token is active, additional data about the token is also returned.</li> <li>Note that if the token is invalid, expired, or revoked, it is considered inactive.</li>",
+        "parameters" : [ {
+          "name" : "app_id",
+          "in" : "path",
+          "description" : "The application ID of the Open ID connect custom web app",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/x-www-form-urlencoded" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Introspect_app_id_body"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "API-Result",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OAuth2Introspect_400_errors"
+                }
+              }
+            }
+          }
+        },
+        "x-idap-anon" : true,
+        "x-codegen-request-body-name" : "payload"
+      }
+    },
+    "/OAuth2/Revoke/{app_id}" : {
+      "post" : {
+        "tags" : [ "OAuth & OpenID Connect" ],
+        "summary" : "Revoke tokens",
+        "description" : "<li>This revoke API allows a client to invalidate its tokens if the end-user logs out,  changes identity, or uninstalls the respective application.</li> <li>The client ID and client secret should be passed as authorization header of type Basic.</li> <li>Refer guides <a href=\"https://identity-developer.cyberark.com/docs/revoke-tokens\">Revoke Token</a> for more information.</li>",
+        "parameters" : [ {
+          "name" : "app_id",
+          "in" : "path",
+          "description" : "The application ID of the Open ID connect custom web app",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/x-www-form-urlencoded" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Revoke_app_id_body"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "API-Result",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OAuth2Revoke"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OAuth2Revoke_400_errors"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ],
+        "x-idap-anon" : true,
+        "x-codegen-request-body-name" : "payload"
+      }
+    },
+    "/OAuth2/EndSession/{app_id}" : {
+      "post" : {
+        "tags" : [ "OAuth & OpenID Connect" ],
+        "summary" : "End user session",
+        "description" : "<li>This API is used to destroy an OIDC session through RP-initiated logout with the option to redirect users to a pre-determined URL.</li> <li>A post_logout_redirect_uri may be specified to redirect the browser after the logout is performed.  The post_logout_uri sent in the request should be part of the authorized logout URIs list configured at authorization server.</li> <li>Refer guide <a href=\"https://identity-developer.cyberark.com/docs/end-openid-connect-session-on-cyberark-identity\">here</a> for more information</li>",
+        "parameters" : [ {
+          "name" : "app_id",
+          "in" : "path",
+          "description" : "The application ID of the Open ID connect custom web app",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "post_logout_redirect_uri",
+          "in" : "query",
+          "description" : "The redirect URI to which the user will be redirected to after logout from CyberArk Identity.",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "state",
+          "in" : "query",
+          "description" : "An optional value that is returned as a query parameter during the redirect to the post_logout_redirect_uri. The value can be used by the client application to validate the redirect.",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "id_token_hint",
+          "in" : "query",
+          "description" : "An optional value where a valid Id token should be passed with a subject that matches the current session. Its recommended when requesting post-logout redirection.",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "302" : {
+            "description" : "API-Result",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OAuth2EndSession"
+                }
+              }
+            }
+          }
+        },
+        "x-idap-anon" : true
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "OAuth2EndSession" : {
+        "type" : "object",
+        "properties" : {
+          "Result" : {
+            "type" : "string",
+            "description" : "The user will be redirected to the post logout URI along with the state query parameter if specified. Else the user is redirected to the user portal    "
+          }
+        }
+      },
+      "OAuth2Revoke_400_errors" : {
+        "type" : "object",
+        "properties" : {
+          "Result" : {
+            "$ref" : "#/components/schemas/OAuth2Revoke_400_errors_Result"
+          }
+        }
+      },
+      "OAuth2Revoke" : {
+        "type" : "object",
+        "properties" : {
+          "Result" : {
+            "type" : "string",
+            "description" : "The authorization server responds with HTTP status code 200 if the token has been revoked successfully or the client submitted an invalid token.  Note: invalid tokens do not cause an error response since the client cannot reasonably handle such an error.  Moreover, the purpose of the revocation request, invalidating the particular token, is already achieved.    "
+          }
+        }
+      },
+      "OAuth2Introspect_tokenInactive" : {
+        "type" : "object",
+        "properties" : {
+          "Result" : {
+            "$ref" : "#/components/schemas/OAuth2Introspect_tokenInactive_Result"
+          }
+        }
+      },
+      "OAuth2Introspect_tokenActive" : {
+        "type" : "object",
+        "properties" : {
+          "Result" : {
+            "$ref" : "#/components/schemas/OAuth2Introspect_tokenActive_Result"
+          }
+        }
+      },
+      "OAuth2Introspect_400_errors" : {
+        "type" : "object",
+        "properties" : {
+          "Result" : {
+            "$ref" : "#/components/schemas/OAuth2Introspect_400_errors_Result"
+          }
+        }
+      },
+      "OAuth2UserInfo_400_errors" : {
+        "type" : "object",
+        "properties" : {
+          "Result" : {
+            "$ref" : "#/components/schemas/OAuth2UserInfo_400_errors_Result"
+          }
+        }
+      },
+      "OAuth2UserInfo" : {
+        "type" : "object",
+        "properties" : {
+          "Result" : {
+            "$ref" : "#/components/schemas/OAuth2UserInfo_Result"
+          }
+        }
+      },
+      "OAuth2Token" : {
+        "type" : "object",
+        "properties" : {
+          "Result" : {
+            "$ref" : "#/components/schemas/OAuth2Token_Result"
+          }
+        }
+      },
+      "OAuth2Token_400_errors" : {
+        "type" : "object",
+        "properties" : {
+          "Result" : {
+            "$ref" : "#/components/schemas/OAuth2Token_400_errors_Result"
+          }
+        },
+        "description" : "The API response when invalid request is sent to the server."
+      },
+      "OAuth2Confirm" : {
+        "type" : "object",
+        "properties" : {
+          "Consent" : {
+            "type" : "string",
+            "description" : "The user will be redirected to the redirect URI after the user consent is saved.\n**Example:**\nIf the user has denied the consent the redirect URI will be `<redirect_uri>?error=access_denied&error_description=User%20denied%20confirmation`\nOn approving the consent, the user will be redirected to the redirect URI with authorization code or tokens depending on `response_type` Ex: `<redirect_uri>?state=123abc&responseType=code&code=yovIWA...`\n"
+          }
+        }
+      },
+      "OAuth2Confirm500Errors" : {
+        "type" : "object",
+        "properties" : {
+          "Result" : {
+            "$ref" : "#/components/schemas/OAuth2Confirm500Errors_Result"
+          }
+        }
+      },
+      "UnauthorizedUserError" : {
+        "type" : "object",
+        "properties" : {
+          "Result" : {
+            "$ref" : "#/components/schemas/UnauthorizedUserError_Result"
+          }
+        }
+      },
+      "OAuth2Authorize_authenticatedResponse" : {
+        "type" : "object",
+        "properties" : {
+          "Result" : {
+            "$ref" : "#/components/schemas/OAuth2Authorize_authenticatedResponse_Result"
+          }
+        }
+      },
+      "OAuth2Authorize_unauthenticatedResponse" : {
+        "type" : "object",
+        "properties" : {
+          "Result" : {
+            "$ref" : "#/components/schemas/OAuth2Authorize_unauthenticatedResponse_Result"
+          }
+        }
+      },
+      "OAuth2Authorize_302_errors" : {
+        "type" : "object",
+        "properties" : {
+          "Result" : {
+            "$ref" : "#/components/schemas/OAuth2Authorize_302_errors_Result"
+          }
+        }
+      },
+      "OAuth2Authorize_400_errors" : {
+        "type" : "object",
+        "properties" : {
+          "Result" : {
+            "$ref" : "#/components/schemas/OAuth2Authorize_400_errors_Result"
+          }
+        }
+      },
+      "OAuth2Authorize_500_errors" : {
+        "type" : "object",
+        "properties" : {
+          "Result" : {
+            "$ref" : "#/components/schemas/OAuth2Authorize_500_errors_Result"
+          }
+        }
+      },
+      "OAuth2GetMeta" : {
+        "type" : "object",
+        "properties" : {
+          "Result" : {
+            "type" : "object",
+            "description" : "The API response contains the  <a href=\"https://identity-developer.cyberark.com/docs/about-openid-connect#openid-connect-metadata\">  OpenID connect provider metadata</a>. The OP metadata can be requested using  `<tenant_url>/<application_id>/.well-known/openid-configuration`.\n"
+          }
+        }
+      },
+      "OAuth2GetMeta_400_errors" : {
+        "type" : "object",
+        "properties" : {
+          "Result" : {
+            "$ref" : "#/components/schemas/OAuth2GetMeta_400_errors_Result"
+          }
+        }
+      },
+      "JwtKeysResponse" : {
+        "type" : "object",
+        "properties" : {
+          "Result" : {
+            "type" : "array",
+            "description" : "The JWT keys used to sign the ID and access tokens. These keys should be used by client applications to verify the tokens' signatures.\n",
+            "items" : {
+              "$ref" : "#/components/schemas/JwtKeysResponse_Result"
+            }
+          }
+        }
+      },
+      "JwtKeysErrorResponse" : {
+        "type" : "object",
+        "properties" : {
+          "Result" : {
+            "$ref" : "#/components/schemas/JwtKeysErrorResponse_Result"
+          }
+        }
+      },
+      "inline_response_302" : {
+        "oneOf" : [ {
+          "$ref" : "#/components/schemas/OAuth2Authorize_authenticatedResponse"
+        }, {
+          "$ref" : "#/components/schemas/OAuth2Authorize_unauthenticatedResponse"
+        }, {
+          "$ref" : "#/components/schemas/OAuth2Authorize_302_errors"
+        } ]
+      },
+      "Token_app_id_body" : {
+        "required" : [ "client_id", "code", "grant_type", "redirect_uri" ],
+        "type" : "object",
+        "properties" : {
+          "grant_type" : {
+            "type" : "string",
+            "description" : "The OAuth/OIDC grant type. CyberArk Identity supports the following grant types: \n1. authorization_code: Refers to authorization code flow (with/without PKCE) and hybrid flow\n2. client_credentials: Refers to client credentials flow\n3. password: refers to ROPG flow\n4. refresh_token: Used to refresh an access token\n"
+          },
+          "redirect_uri" : {
+            "type" : "string",
+            "description" : "The callback URI to which the user gets redirected along with the authorization code or tokens.  The redirect URI must be in the list of authorized redirect URIs."
+          },
+          "client_id" : {
+            "type" : "string",
+            "description" : "The client ID is the unique ID that CyberArk Identity issues to the client application."
+          },
+          "client_secret" : {
+            "type" : "string",
+            "description" : "A unique code that an authorization service issues when the service registers the application.  You can think of it as the password for the client application."
+          },
+          "code" : {
+            "type" : "string",
+            "description" : "Authorization code sent with Redirect URI."
+          },
+          "code_verifier" : {
+            "type" : "string",
+            "description" : "<a href=\"https://identity-developer.cyberark.com/docs/authorization-code-flow-with-pkce#code-verifier-and-code-challenge\"> Code verifier </a>  is a high-entropy cryptographic random STRING. </a> This is used for only PKCE flow."
+          },
+          "state" : {
+            "type" : "string",
+            "description" : "The Client should use the content of this parameter to make sure the Code it received matches the authorization request it sent."
+          },
+          "nonce" : {
+            "type" : "string",
+            "description" : "The string value is used to associate a client session with an access token and to mitigate replay attacks.  The value is passed through unmodified from the Authentication Request to the access Token.  If present in the access Token, Clients must verify that the nonce Claim Value equals the value of the nonce parameter sent in the Authentication Request."
+          }
+        }
+      },
+      "Introspect_app_id_body" : {
+        "required" : [ "token" ],
+        "type" : "object",
+        "properties" : {
+          "token" : {
+            "type" : "string",
+            "description" : "Token can be access/ ID / refresh token. Ex: abcdefyhuk23fj4j5b4"
+          }
+        }
+      },
+      "inline_response_200" : {
+        "oneOf" : [ {
+          "$ref" : "#/components/schemas/OAuth2Introspect_tokenActive"
+        }, {
+          "$ref" : "#/components/schemas/OAuth2Introspect_tokenInactive"
+        } ]
+      },
+      "Revoke_app_id_body" : {
+        "required" : [ "token" ],
+        "type" : "object",
+        "properties" : {
+          "token" : {
+            "type" : "string",
+            "description" : "Access / ID token returned from token endpoint Ex: abhdb..."
+          }
+        }
+      },
+      "OAuth2Revoke_400_errors_Result" : {
+        "type" : "object",
+        "properties" : {
+          "Missing token" : {
+            "type" : "string",
+            "description" : "The error is seen token is missing in the API request.\n\n   <b>Example:</b>\n   \"error\": \"invalid_request\",\n   \"error_description\": \"missing token\"\n"
+          }
+        },
+        "description" : "The API response when invalid request is sent to the server."
+      },
+      "OAuth2Introspect_tokenInactive_Result" : {
+        "type" : "object",
+        "properties" : {
+          "active" : {
+            "type" : "boolean",
+            "description" : "The active field in the response indicates if the token is currently active or not. Value is false."
+          }
+        },
+        "description" : "The API response when the token is inactive.    "
+      },
+      "OAuth2Introspect_tokenActive_Result" : {
+        "type" : "object",
+        "properties" : {
+          "scope" : {
+            "type" : "string",
+            "description" : "A space-delimited list of scopes."
+          },
+          "exp" : {
+            "type" : "string",
+            "description" : "The expiration time of the token in seconds."
+          },
+          "active" : {
+            "type" : "boolean",
+            "description" : "The active field in the response indicates if the token is currently active or not. Value is true"
+          },
+          "sub" : {
+            "type" : "string",
+            "description" : "The subject of the token."
+          },
+          "aud" : {
+            "type" : "string",
+            "description" : "The audience of the token."
+          },
+          "auth_time" : {
+            "type" : "string",
+            "description" : "It is the time in seconds when authentication was made."
+          },
+          "app_id" : {
+            "type" : "string",
+            "description" : "It is the unique id of the application configured."
+          },
+          "iss" : {
+            "type" : "string",
+            "description" : "The issuer of the token."
+          },
+          "iat" : {
+            "type" : "string",
+            "description" : "The issuing time of the token in seconds."
+          },
+          "unique_name" : {
+            "type" : "string",
+            "description" : "It is the username or client id."
+          }
+        },
+        "description" : "The API response when the token is active. Please refer to <a href=\"https://identity-developer.cyberark.com/docs/tokens\">  https://identity-developer.cyberark.com/docs/tokens </a> for more information on the response fields.    "
+      },
+      "OAuth2Introspect_400_errors_Result" : {
+        "type" : "object",
+        "properties" : {
+          "Unauthenticated request" : {
+            "type" : "string",
+            "description" : "The error is seen when the user who sent the API request is not authenticated.\n\n   <b>Example:</b>\n   \"error\": \"access_denied\",\n   \"error_description\": \"requesting user not authenticated\"\n"
+          },
+          "Invalid application ID" : {
+            "type" : "string",
+            "description" : "The error is seen when the application ID sent in the API request is incorrect.\n\n   <b>Example:</b>\n   \"error\": \"invalid_request\",\n   \"error_description\": \"unknown app 123\"\n"
+          },
+          "Missing token" : {
+            "type" : "string",
+            "description" : "The error is seen when the token is not sent in the API request.\n\n   <b>Example:</b>\n   \"error\": \"invalid_request\",\n   \"error_description\": \"missing token in request\"\n"
+          }
+        },
+        "description" : "The API response when invalid request is sent to the server."
+      },
+      "OAuth2UserInfo_400_errors_Result" : {
+        "type" : "object",
+        "properties" : {
+          "Invalid application ID" : {
+            "type" : "string",
+            "description" : "The error is seen when the application ID sent is invalid in the API request.\n\n   <b>Example:</b>\n   \"error\": \"invalid_request\",\n   \"error_description\": \"unknown app 123\"\n"
+          },
+          "Invalid application configuration" : {
+            "type" : "string",
+            "description" : "The error is seen when the application ID is missing in the API request.\n\n   <b>Example:</b>\n   \"error\": \"invalid_request\",\n   \"error_description\": \"invalid app configuration\"\n"
+          },
+          "Invalid URL" : {
+            "type" : "string",
+            "description" : "The error is seen when the API request URL is incorrect.\n\n   <b>Example:</b>\n   \"error\": \"invalid_request\",\n   \"error_description\": \"bad url\"\n"
+          }
+        },
+        "description" : "The API response when invalid request is sent to the server."
+      },
+      "OAuth2UserInfo_Result" : {
+        "type" : "object",
+        "properties" : {
+          "aud" : {
+            "type" : "string",
+            "description" : "Audience of the token"
+          },
+          "unique_name" : {
+            "type" : "string",
+            "description" : "unique name of the user"
+          },
+          "email_verified" : {
+            "type" : "boolean",
+            "description" : "A boolean flag that specifies if the users email is verified or not."
+          },
+          "given_name" : {
+            "type" : "integer",
+            "description" : "Given name of the user"
+          },
+          "family_name" : {
+            "type" : "string",
+            "description" : "Family name of the user."
+          },
+          "email" : {
+            "type" : "string",
+            "description" : "Email of the user"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "User name"
+          },
+          "auth_time" : {
+            "type" : "string",
+            "description" : "The time at which the user is authenticated"
+          },
+          "Success" : {
+            "type" : "boolean",
+            "description" : "A boolean flag that specifies if the API request is successful or not"
+          },
+          "preferred_username" : {
+            "type" : "string",
+            "description" : "Preferred user name"
+          },
+          "sub" : {
+            "type" : "string",
+            "description" : "Subject Identifier. A locally unique and never reassigned identifier within the issuer for the End-User, which is intended to be consumed by the client"
+          }
+        },
+        "description" : "Successful API response"
+      },
+      "OAuth2Token_Result" : {
+        "type" : "object",
+        "properties" : {
+          "expires_in" : {
+            "type" : "integer",
+            "description" : "The expiry date of the access and ID tokens"
+          },
+          "scope" : {
+            "type" : "string",
+            "description" : "The scopes of the token. These scopes are sent in the authorization request."
+          },
+          "access_token" : {
+            "type" : "string",
+            "description" : "Access token that defines the client applications access to protected resources."
+          },
+          "token_type" : {
+            "type" : "string",
+            "description" : "The type of token."
+          },
+          "id_token" : {
+            "type" : "string",
+            "description" : "The ID token that gives claims information of the user"
+          },
+          "refresh_token" : {
+            "type" : "string",
+            "description" : "The refresh token can be used to generate new access tokens."
+          },
+          "state" : {
+            "type" : "string",
+            "description" : "The client should use the content of this parameter to make sure the Code it received matches the authorization request it sent."
+          }
+        },
+        "description" : "The API response for a successful API request."
+      },
+      "OAuth2Token_400_errors_Result" : {
+        "type" : "object",
+        "properties" : {
+          "Invalid client ID" : {
+            "type" : "string",
+            "description" : "The error is seen when the client ID is missing in the API request.\n\n <b>Example:</b>\n \"error\": \"invalid_client\",\n \"error_description\": \"wrong clientid\"\n"
+          },
+          "Invalid authorization code" : {
+            "type" : "string",
+            "description" : "The error is seen when the authorization code sent in the API request is invalid.\n\n<b>Example:</b>\n\"error\": \"invalid_grant\",\n\"error_description\": \"supplied code does not match known request\"\n"
+          },
+          "Invalid grant type" : {
+            "type" : "string",
+            "description" : "The error is seen when the grant type is invalid.\n\n<b>Example:</b>\n\"error\": \"invalid_grant\",\n\"error_description\": \"invalid grant type\"\n"
+          },
+          "Mismatched redirect URI" : {
+            "type" : "string",
+            "description" : "The error is seen when the redirect URI sent in the token request is not part of the authorized redirects.\n\n<b>Example:</b>\n\"error\": \"invalid_request\",\n\"error_description\": \"mismatched redirect\"\n"
+          }
+        }
+      },
+      "OAuth2Confirm500Errors_Result" : {
+        "type" : "object",
+        "properties" : {
+          "Incorrect bounce value" : {
+            "type" : "string",
+            "description" : "The bounce value sent in the request is incorrect.\n\n<b>Example:</b>\n\"error\": \"500\",\n\"error_description\": \"State not found for type OAuthBounce, key oRun...\"  \n"
+          },
+          "Bounce parameter missing" : {
+            "type" : "string",
+            "description" : "The bounce value is not sent in the authorization request.\n\n\"error\": \"500\",\n\"error_description\": \"String reference not set to an instance of a String.\\r\\nParameter name: s\"           \n"
+          }
+        },
+        "description" : "The API response when invalid request is sent to the server."
+      },
+      "UnauthorizedUserError_Result" : {
+        "type" : "object",
+        "properties" : {
+          "Unauthorized user" : {
+            "type" : "string",
+            "description" : "The user is not an authorized user. Either the user has not logged in or the user doesn't have rights to perform the request.\n\n<b>Example:</b>\n\"error_message\": \"You do not have access to this content. Please contact your system administrator for assistance.\"  \n"
+          }
+        },
+        "description" : "The API response when invalid request is sent to the server."
+      },
+      "OAuth2Authorize_authenticatedResponse_Result" : {
+        "type" : "object",
+        "properties" : {
+          "authenticated_response" : {
+            "type" : "string",
+            "description" : "If the user is authenticated, then redirected to redirect URI with code/token."
+          }
+        }
+      },
+      "OAuth2Authorize_unauthenticatedResponse_Result" : {
+        "type" : "object",
+        "properties" : {
+          "unauthenticated_response" : {
+            "type" : "string",
+            "description" : "If the user is not authenticated, CyberArk Identity will redirect the user to the login page or throw an error depending on the value of the prompt parameter."
+          }
+        }
+      },
+      "OAuth2Authorize_302_errors_Result" : {
+        "type" : "object",
+        "properties" : {
+          "error" : {
+            "type" : "string",
+            "description" : "Error type (e.g., access_denied, unsupported_response_type, etc.)",
+            "example" : "access_denied"
+          },
+          "error_description" : {
+            "type" : "string",
+            "description" : "Human-readable description of the error",
+            "example" : "User denied access to the application"
+          }
+        }
+      },
+      "OAuth2Authorize_400_errors_Result" : {
+        "type" : "object",
+        "properties" : {
+          "error" : {
+            "type" : "string",
+            "description" : "Error type",
+            "example" : "invalid_request"
+          },
+          "error_description" : {
+            "type" : "string",
+            "description" : "Detailed error description",
+            "example" : "Required parameter 'redirect_uri' is missing"
+          }
+        }
+      },
+      "OAuth2Authorize_500_errors_Result" : {
+        "type" : "object",
+        "properties" : {
+          "error" : {
+            "type" : "string",
+            "description" : "Internal server error",
+            "example" : "server_error"
+          },
+          "error_description" : {
+            "type" : "string",
+            "description" : "Description of the internal error",
+            "example" : "Unexpected error occurred during request processing"
+          }
+        }
+      },
+      "OAuth2GetMeta_400_errors_Result" : {
+        "type" : "object",
+        "properties" : {
+          "Application ID incorrect" : {
+            "type" : "string",
+            "description" : "The error is observed if application ID is not sent or if incorrect value is sent as the query parameter.\n\n**Example:**\n```\n\"error\": \"invalid_request\",\n\"error_description\": \"unknown app\"\n```\n"
+          }
+        },
+        "description" : "The API response when an invalid request is sent to the server."
+      },
+      "JwtKeysResponse_Result" : {
+        "type" : "object",
+        "properties" : {
+          "kty" : {
+            "type" : "string",
+            "description" : "The type of JWT key (e.g., RSA)."
+          },
+          "alg" : {
+            "type" : "string",
+            "description" : "The algorithm used with the key (e.g., RS256)."
+          },
+          "use" : {
+            "type" : "string",
+            "description" : "The intended use of the key (e.g., \"sig\" for signature)."
+          },
+          "kid" : {
+            "type" : "string",
+            "description" : "The key ID or thumbprint used to identify the key."
+          }
+        }
+      },
+      "JwtKeysErrorResponse_Result" : {
+        "type" : "object",
+        "properties" : {
+          "error" : {
+            "type" : "string",
+            "description" : "Error code",
+            "example" : "invalid_request"
+          },
+          "error_description" : {
+            "type" : "string",
+            "description" : "Human-readable explanation of the error",
+            "example" : "unknown app 123"
+          }
+        },
+        "description" : "Contains details of the error."
+      }
+    },
+    "securitySchemes" : {
+      "bearerAuth" : {
+        "type" : "http",
+        "scheme" : "bearer",
+        "bearerFormat" : "JWT"
+      },
+      "basicAuth" : {
+        "type" : "http",
+        "scheme" : "basic"
+      }
+    }
+  }
+}
